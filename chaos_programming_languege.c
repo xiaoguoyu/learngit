@@ -42,7 +42,15 @@
 []中的指令会一直循环直到指针指向的数的值为0就会退出但只退出一层循环，不会退出所有循环，相当于break
 
 
-.会输出一个编码为当前指针指向的数的值的字符（有点绕口哈）
+.会输出一个ASCII编码为当前指针指向的数的值的字符（有点绕口哈）
+
+
+f回让你输入一个file的绝对路径，这个file里面是代码
+
+
+您可以随便写注释，但注释中不能写这几个字符:<>?.[]-+f
+否则就会当作代码（哭笑不得）
+建议大家的注释前加上//因为之后还可能修复这个bug
 
 
 示例
@@ -58,7 +66,11 @@ P
 ----------------------------------------------我是分割线-------------------------------------------------
 ::++++++++++>+>+>+[+++++++++<++++<+<->>>]>>>+++++++++++++.---.+++++++..+++.<+++.------------.>++++++++.--------.+++.------.--------.<<-.
 hello, world
-
+----------------------------------------------我是分割线-------------------------------------------------
+::f
+filepath>C:\Users\xxxxx\Desktop\hello.txt
+hello, world
+在这里hello.txt的内容是上一个例子里的代码
 
 
 此语言借鉴了一个其他的语言（但并不完全相同），网址：https://fatiherikli.github.io/brainfuck-visualizer/
@@ -148,56 +160,120 @@ int main(){
         scanf("%s", commend);
         int* pointer = &old_pointer;
         int num = 0;
-        while (commend[num] != '\0')
+        if (commend[0] == 'f')
         {
-            switch (commend[num])
+            char fpath[200];
+            printf("filepath>");
+            scanf("%s", &fpath);
+            FILE* file = fopen(fpath, "r");
+            int p = 0;
+            while ((commend[p] = getc(file)) != EOF)
             {
-                case '<':{
-                    (*pointer)--;
-                    break;
-                }
-                case '>':{
-                    (*pointer)++;
-                    break;
-                }
-                case '+':{
-                    (*(map + *pointer))++;
-                    break;
-                }
-                case '-':{
-                    (*(map + *pointer))--;
-                    break;
-                }
-                case '.':{
-                    printf("%c", *(map + *pointer));
-                    break;
-                }
-                case '[':{
-                    char new_commend[MAX];
-                    int aboutthisnameihavenoidea = 0;
-                    for (int the_num = num+1;; the_num++)
-                    {
-                        if(commend[the_num] == ']'){
-                            new_commend[aboutthisnameihavenoidea] = '\0';
-                            while(loop(new_commend, pointer, map) == 0)
-                                ;
-                            num += aboutthisnameihavenoidea;
-                            num += 1;
-                            break;
-                        }else{
-                            new_commend[aboutthisnameihavenoidea] = commend[the_num];
-                            aboutthisnameihavenoidea++;
-                        }
-                    }
-                    break;
-                }
-                case '?':{
-                    printf("%d -> %d\n", *pointer, *(map + *pointer));
-                    break;
-                }
+                p++;
             }
-            num++;
+            fclose(file);
+            while (commend[num] != '\0')
+            {
+                switch (commend[num])
+                {
+                    case '<':{
+                        (*pointer)--;
+                        break;
+                    }
+                    case '>':{
+                        (*pointer)++;
+                        break;
+                    }
+                    case '+':{
+                        (*(map + *pointer))++;
+                        break;
+                    }
+                    case '-':{
+                        (*(map + *pointer))--;
+                        break;
+                    }
+                    case '.':{
+                        printf("%c", *(map + *pointer));
+                        break;
+                    }
+                    case '[':{
+                        char new_commend[MAX];
+                        int aboutthisnameihavenoidea = 0;
+                        for (int the_num = num+1;; the_num++)
+                        {
+                            if(commend[the_num] == ']'){
+                                new_commend[aboutthisnameihavenoidea] = '\0';
+                                while(loop(new_commend, pointer, map) == 0)
+                                    ;
+                                num += aboutthisnameihavenoidea;
+                                num += 1;
+                                break;
+                            }else{
+                                new_commend[aboutthisnameihavenoidea] = commend[the_num];
+                                aboutthisnameihavenoidea++;
+                            }
+                        }
+                        break;
+                    }
+                    case '?':{
+                        printf("%d -> %d\n", *pointer, *(map + *pointer));
+                        break;
+                    }
+                }
+                num++;
+            }
         }
+        else
+            while (commend[num] != '\0')
+            {
+                switch (commend[num])
+                {
+                    case '<':{
+                        (*pointer)--;
+                        break;
+                    }
+                    case '>':{
+                        (*pointer)++;
+                        break;
+                    }
+                    case '+':{
+                        (*(map + *pointer))++;
+                        break;
+                    }
+                    case '-':{
+                        (*(map + *pointer))--;
+                        break;
+                    }
+                    case '.':{
+                        printf("%c", *(map + *pointer));
+                        break;
+                    }
+                    case '[':{
+                        char new_commend[MAX];
+                        int aboutthisnameihavenoidea = 0;
+                        for (int the_num = num+1;; the_num++)
+                        {
+                            if(commend[the_num] == ']'){
+                                new_commend[aboutthisnameihavenoidea] = '\0';
+                                while(loop(new_commend, pointer, map) == 0)
+                                    ;
+                                num += aboutthisnameihavenoidea;
+                                num += 1;
+                                break;
+                            }else{
+                                new_commend[aboutthisnameihavenoidea] = commend[the_num];
+                                aboutthisnameihavenoidea++;
+                            }
+                        }
+                        break;
+                    }
+                    case '?':{
+                        printf("%d -> %d\n", *pointer, *(map + *pointer));
+                        break;
+                    }
+                }
+                num++;
+            }
     }
         //loop(commend, &pointer, map);
     return 0;
